@@ -1,6 +1,5 @@
 from django.shortcuts import render,redirect
 from rest_framework import viewsets
-from rest_framework.generics import GenericAPIView,CreateAPIView
 from rest_framework.views import APIView
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
@@ -55,25 +54,43 @@ def activate(request, uid64, token):
         user.save()
         return redirect('login')
     else:
-        return redirect('register')
+        return redirect('registration')
 
 
+# class UserLoginViewSet(APIView):
+#     def post(self,request):
+#         serializer = UserLoginSerializer(data = request.data)
+#         if serializer.is_valid():
+#             username = serializer.validated_data['username']
+#             password = serializer.validated_data['password']
+
+#             user = authenticate(username = username, password = password)
+
+#             if user:
+#                 token,_create = Token.objects.get_or_create(user = user)
+#                 login(request, user)
+#                 return Response({'token': token.key, 'user_id': user.id})
+#             else:
+#                 return Response({'error': 'Invalid Credentials'})
+#         return Response(serializer.errors)
+    
 class UserLoginViewSet(APIView):
-    def post(self,request):
-        serializer = UserLoginSerializer(data = request.data)
+    def post(self, request):
+        serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():
             username = serializer.validated_data['username']
             password = serializer.validated_data['password']
 
-            user = authenticate(username = username, password = password)
+            user = authenticate(username=username, password=password)
 
             if user:
-                token,_create = Token.objects.get_or_create(user = user)
+                token, _create = Token.objects.get_or_create(user=user)
                 login(request, user)
                 return Response({'token': token.key, 'user_id': user.id})
             else:
-                return Response({'error': 'Invalid Credentials'})
-        return Response(serializer.errors)
+                return Response({'error': 'Invalid Credentials'}, status=401)
+        else:
+            return Response({'error': serializer.errors}, status=400)
     
 class UserLogoutViewSet(APIView):
     def get(self,request):
