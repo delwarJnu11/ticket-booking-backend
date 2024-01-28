@@ -1,6 +1,14 @@
 from rest_framework import serializers
 from account.models import UserAccount
 
+class UserSerializer(serializers.ModelSerializer):
+#     password=None
+    class Meta:
+        model = UserAccount
+        fields = ['username', 'first_name', 'last_name', 'email','password', 'phone', 'nid', 'address', 'image' ]
+        extra_kwargs = {'password': {'write_only': True,}}
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
     class Meta:

@@ -1,13 +1,14 @@
 from django.shortcuts import render,redirect
 from rest_framework import viewsets
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth import authenticate,login,logout
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from account.serializers import UserRegistrationSerializer,UserLoginSerializer
+from account.serializers import UserSerializer, UserRegistrationSerializer,UserLoginSerializer
 from account.models import UserAccount
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
@@ -26,11 +27,15 @@ def send_email(user,confirm_link, mail_subject,template):
     send_email.send()
 
 # Create your views here.
-class UserRegistrationViewSet(viewsets.ModelViewSet):
+class UserListViewSet(viewsets.ModelViewSet):
     queryset = UserAccount.objects.all()
+    serializer_class = UserSerializer
+    
+
+class UserRegistrationViewSet(APIView):
     serializer_class = UserRegistrationSerializer
 
-    def create(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         serializer_form = self.serializer_class(data=request.data)
 
         if serializer_form.is_valid():
@@ -56,23 +61,6 @@ def activate(request, uid64, token):
     else:
         return redirect('registration')
 
-
-# class UserLoginViewSet(APIView):
-#     def post(self,request):
-#         serializer = UserLoginSerializer(data = request.data)
-#         if serializer.is_valid():
-#             username = serializer.validated_data['username']
-#             password = serializer.validated_data['password']
-
-#             user = authenticate(username = username, password = password)
-
-#             if user:
-#                 token,_create = Token.objects.get_or_create(user = user)
-#                 login(request, user)
-#                 return Response({'token': token.key, 'user_id': user.id})
-#             else:
-#                 return Response({'error': 'Invalid Credentials'})
-#         return Response(serializer.errors)
     
 class UserLoginViewSet(APIView):
     def post(self, request):
