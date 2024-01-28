@@ -29,6 +29,8 @@ SECRET_KEY = 'django-insecure-*l#rnkhy_3#a$hfh-tsewu*zn#+6&j#v&%a8%nkn3n!e2e7o15
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ['https://ticket-booking-1eto.onrender.com','https://*.127.0.0.1']
+
 
 AUTH_USER_MODEL = 'account.UserAccount'
 
