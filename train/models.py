@@ -30,11 +30,14 @@ class Train(models.Model):
             self.all_seats.clear()
             all_seats = Seat.objects.all()
 
-            for i, seat in enumerate(self.all_seats.all()):
-                seat.is_booked = False
+            seats_to_associate = all_seats[:self.seats_available]
+            
+            # Associate seats with the current train
+            for seat in seats_to_associate:
+                seat.train = self
                 seat.save()
 
-            self.all_seats.add(*all_seats)
+            self.all_seats.add(*seats_to_associate)
 
 class Seat(models.Model):
     train = models.ForeignKey(Train, on_delete=models.CASCADE, null=True, blank=True)
