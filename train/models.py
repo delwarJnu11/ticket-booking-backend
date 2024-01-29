@@ -28,15 +28,16 @@ class Train(models.Model):
 
         if not self.all_seats.exists():
             self.all_seats.clear()
-            all_seats = Seat.objects.all()[:self.seats_available]
+            all_seats = Seat.objects.all()
 
-            for i, seat in enumerate(all_seats):
-                seat.is_booked = False if i < self.seats_available else True
+            for i, seat in enumerate(self.all_seats.all()):
+                seat.is_booked = False
                 seat.save()
 
             self.all_seats.add(*all_seats)
 
 class Seat(models.Model):
+    train = models.ForeignKey(Train, on_delete=models.CASCADE, null=True, blank=True)
     seat_number = models.CharField(max_length=3, choices=SEAT_CHOICES, default='A1')
     is_booked = models.BooleanField(default=False)
 
