@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Train, Station, Booking, Review
+from .models import Train, Station, Booking, Review, Seat
 
 class TrainSerializer(serializers.ModelSerializer):
     station = serializers.StringRelatedField(many=False)
@@ -20,4 +20,9 @@ class BookingSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
+        fields = '__all__'
+
+class SeatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Seat
         fields = '__all__'
