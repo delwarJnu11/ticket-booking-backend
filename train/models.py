@@ -26,16 +26,16 @@ class Train(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-        seats_to_create = [
-            Seat(train=self, seat_number=f"{letter}{i}")
-            for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-            for i in range(1, 6)
-        ]
+        # If no seats are associated with the train, create them
+        if not self.all_seats.exists():
+            # Clear existing seats to ensure no duplicate associations
+            self.all_seats.clear()
 
-        Seat.objects.bulk_create(seats_to_create)
+            # Create seats only if they don't exist
+            seats_to_associate = Seat.objects.all()[:self.seats_available]
+            self.all_seats.add(*seats_to_associate)
 
 class Seat(models.Model):
-    train = models.ForeignKey(Train, on_delete=models.CASCADE, null=True, blank=True)
     seat_number = models.CharField(max_length=3, choices=SEAT_CHOICES, default='A1')
     is_booked = models.BooleanField(default=False)
 
