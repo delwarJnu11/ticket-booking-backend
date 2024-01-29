@@ -82,7 +82,7 @@ TEMPLATES = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "https://ticket-express-psi.vercel.app/",
+    "https://ticket-express-psi.vercel.app",
 ]
 
 WSGI_APPLICATION = 'ticket_express.wsgi.application'
