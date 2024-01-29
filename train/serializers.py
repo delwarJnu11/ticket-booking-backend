@@ -23,6 +23,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SeatSerializer(serializers.ModelSerializer):
+    seat_number = serializers.StringRelatedField(many=False)
     class Meta:
         model = Seat
         fields = '__all__'
