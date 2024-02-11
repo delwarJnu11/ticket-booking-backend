@@ -5,10 +5,10 @@ from train.views import TrainViewSet,SeatListAPIView, StationViewSet, BookingVie
 
 router = DefaultRouter()
 
-router.register('trains', TrainViewSet)
-router.register('stations', StationViewSet)
-router.register('bookings', BookingViewSet)
-router.register('reviews', ReviewViewSet)
+router.register('trains', TrainViewSet,basename='trains')
+router.register('stations', StationViewSet,basename='stations')
+router.register('bookings', BookingViewSet,basename='bookings')
+router.register('reviews', ReviewViewSet,basename='reviews')
 
 urlpatterns = [
     path('', include(router.urls)),

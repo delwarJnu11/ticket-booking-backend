@@ -85,6 +85,16 @@ CORS_ALLOWED_ORIGINS = [
     "https://ticket-express-psi.vercel.app",
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    # Add other backends if needed
+]
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_SECURE = False
+
 WSGI_APPLICATION = 'ticket_express.wsgi.application'
 
 

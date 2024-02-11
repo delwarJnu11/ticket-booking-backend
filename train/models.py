@@ -9,56 +9,44 @@ class Station(models.Model):
 
     def __str__(self) -> str:
         return f'{self.name}'
+    
+class Seat(models.Model):
+    seat_no = models.CharField(max_length=10)
+    is_booked = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.seat_no
 
 class Train(models.Model):
     train_name = models.CharField(max_length=50, unique=True)
     train_id = models.CharField(max_length=20, unique=True)
     departure_time = models.CharField(max_length=20, choices=TIME_CHOICES)
     seats_available = models.PositiveIntegerField()
-    start_station = models.CharField(max_length=50, null=True, blank=True)
-    end_station = models.CharField(max_length=50, null=True, blank=True)
-    price = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
-    all_seats = models.ManyToManyField('Seat', related_name='trains', blank=True)
+    start_station = models.CharField(max_length=50)
+    end_station = models.CharField(max_length=50)
+    price = models.DecimalField(max_digits=12, decimal_places=2)
+    all_seats = models.ManyToManyField(Seat)
 
-    def __str__(self) -> str:
-        return f'{self.train_name}-{self.train_id}'
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-        if not self.all_seats.exists():
-            self.all_seats.clear()
-            all_seats = Seat.objects.all()
-
-            seats_to_associate = all_seats[:self.seats_available]
-            
-            # Associate seats with the current train
-            for seat in seats_to_associate:
-                seat.train = self
-                seat.save()
-
-            self.all_seats.add(*seats_to_associate)
-
-class Seat(models.Model):
-    train = models.ForeignKey(Train, on_delete=models.CASCADE, null=True, blank=True)
-    seat_number = models.CharField(max_length=3, choices=SEAT_CHOICES, default='A1')
-    is_booked = models.BooleanField(default=False)
-
-    class Meta:
-        ordering = ['seat_number']
-
-    def __str__(self) -> str:
-        return self.seat_number
+    def __str__(self):
+        return self.train_name
 
 class Booking(models.Model):
-    passenger = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
-    train = models.ForeignKey(Train, on_delete=models.CASCADE)
-    seat_number = models.PositiveIntegerField()
+    user = models.CharField(max_length=50)
+    email = models.EmailField(max_length=50)
+    phone = models.CharField(max_length=14)
+    nid = models.CharField(max_length=20)
+    train = models.CharField(max_length=50)
+    train_id = models.CharField(max_length=20)
+    start_station = models.CharField(max_length=50)
+    end_station = models.CharField(max_length=50)
+    fare = models.DecimalField(max_digits=12, decimal_places=2)
+    departure_time = models.CharField(max_length=20)
+    seat_number = models.CharField(max_length=20)
     booking_date = models.DateTimeField(auto_now_add=True)
     journey_date = models.DateField(null = True, blank = True)
 
     def __str__(self) -> str:
-        return f'{self.passenger.first_name} booking ticket for {self.train.train_name}'
+        return f'{self.user} booking ticket for {self.train} Seat {self.seat_number}'
 
 class Review(models.Model):
     name = models.CharField(max_length = 100)

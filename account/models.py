@@ -3,11 +3,11 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class UserAccount(AbstractUser):
-    phone = models.IntegerField(unique=True, blank=True, default='01749497676')
+    phone = models.IntegerField(unique=True, blank=True, null=True)
     balance = models.DecimalField(max_digits=12,decimal_places=2, default=0)
-    nid = models.CharField(max_length=20, unique=True, default='00')
-    image = models.ImageField(upload_to='account/images/',null=True)
-    address = models.TextField(null=True)
+    nid = models.CharField(max_length=20, unique=True)
+    image = models.ImageField(upload_to='account/images/')
+    address = models.TextField()
 
 
     groups = models.ManyToManyField(
